@@ -8,9 +8,15 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopicConfig {
 
-    @Bean
-    public NewTopic testTopic() {
-        return TopicBuilder.name("test")
+   @Bean
+    public NewTopic orderTopic() {
+        return TopicBuilder.name("orders")
+                .build();
+    }
+
+//    @Bean
+    public NewTopic orderDetailTopic() {
+        return TopicBuilder.name("order-detail")
                 .build();
     }
 }

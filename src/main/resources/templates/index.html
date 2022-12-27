@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+    <title>Checkout - Shopme checkout</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+<!--    <script type="text/javascript" th:href="@{/webjars/jquery/jquery.min.js}"></script>-->
+    <script type="text/javascript" th:href="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <div>
+        <nav class="navbar navbar-expand bg-dark navbar-dark">
+            <img th:src="@{/images/ShopmeAdminSmall.png}"/>
+        </nav>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item">Menu 1</li>
+                <li class="nav-item">Menu 2</li>
+                <li class="nav-item">Menu 3</li>
+                <li class="nav-item">Menu 4</li>
+                <li class="nav-item">Menu 5</li>
+            </ul>
+        </div>
+    </div>
+    <div class="text-center">
+        <h2>Checkout</h2>
+    </div>
+    <div class="row m-1">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-header"><h5>Shipping information</h5></div>
+                <div class="card-body">
+                    <p>
+                        <b>Ship to:</b>&nbsp; [[${shippingAddress}]]
+                        <a href="">[Ship to another address]</a>
+                    </p>
+                    <p>
+                        <b>Days to deliver: </b>[[${checkoutInfo.deliverDays}]] day(s)
+                    </p>
+                    <p>
+                        <b>Expected deliver date: </b>[[${#dates.format(checkoutInfo.deliverDate, 'E, dd MMM yyyy')}]]
+                    </p>
+                </div>
+            </div>
+
+            <div class="card mt-3 mb-3">
+                <div class="card-header"><h5>Payment Method</h5></div>
+                <div class="card-body">
+                    <p>
+                        <input type="radio" name="paymentMethod" id="radioCOD" value="COD" /> Cash on Delivery (COD)
+                        &nbsp;
+                        <button class="btn btn-primary d-none" type="submit" id="submitCOD">Place Order with COD</button>
+                        <br/><br/><br/>
+                        <input type="radio" name="paymentMethod" id="radioPaypal" value="PAYPAL" />
+                        &nbsp;
+                        <img th:src="@{/images/paypal.png}" height="50" alt="Paypal Image"/>
+                        &nbsp;
+                        <button class="btn btn-warning d-none" type="submit" id="submitPAYPAL">Place Order with Paypal</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header"><h5>Order Summary</h5></div>
+                <div class="card-body">
+                    <div>
+                        <table>
+                            <th:block th:each="item : ${cartItems}">
+                                <tr th:with="product = ${item.product}">
+                                    <td>[[${item.quantity}]] X &nbsp;&nbsp;</td>
+                                    <td><img th:src="@{${product.mainImage}}" height="50" alt="Product Image"/></td>
+                                    <td width="60%">
+                                        <a href="" target="_blank">[[${product.name}]]</a>
+                                    </td>
+                                    <td>
+                                        <div>[[${item.convertedSubTotal}]]đ</div>
+                                    </td>
+                                </tr>
+                            </th:block>
+                            <tr>
+                                <td colspan="4"><hr/></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col">Product Total: </div>
+                        <div class="col">[[${checkoutInfo.productTotal}]]đ</div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col">Shipping Total: </div>
+                        <div class="col">[[${checkoutInfo.shippingCostTotal}]]đ</div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col">Payment Total: </div>
+                        <div class="col">[[${checkoutInfo.paymentTotal}]]đ</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="customerId" th:value="${customerId}" />
+    </div>
+</div>
+<div>
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bottomNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="bottomNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="">About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="">Privacy Notice</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="">Returns &amp; Refunds</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+<div th:fragment="footer" class="text-center m-3">
+    <p>Copyright (C) 2022 by 19522419 - Nhom 8 UIT</p>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.2.js" integrity="sha256-pkn2CUZmheSeyssYw3vMp1+xyub4m+e+QK4sQskvuo4="
+        crossorigin="anonymous"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#radioCOD").on("click", function() {
+            $("#submitCOD").removeClass("d-none");
+        });
+
+        $("#radioPaypal").on("click", function() {
+            $("#submitPAYPAL").removeClass("d-none");
+        });
+
+        $("#submitCOD").click(function () {
+            var data = {};
+            data['customerId'] = $("#customerId").val();
+            data['paymentMethod'] = $("#radioCOD").val();
+            $.ajax({
+                type: "POST",
+                url: "/Shopme/api/v1/kafka/publish",
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json",
+                success: function (response) {
+                    console.log(response.body);
+                },
+                error: function (response) {
+                    console.log(response.body);
+                }
+            });
+        });
+
+        $("#submitPAYPAL").click(function () {
+            var data = {};
+            data['customerId'] = $("#customerId").val();
+            data['paymentMethod'] = $("#radioPaypal").val();
+            $.ajax({
+                type: "POST",
+                url: "/Shopme/api/v1/kafka/publish",
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json",
+                success: function (response) {
+                    console.log(response.body);
+                },
+                error: function (response) {
+                    console.log(response.body);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

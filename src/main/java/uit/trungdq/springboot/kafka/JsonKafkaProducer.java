@@ -7,27 +7,41 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
-import uit.trungdq.springboot.payload.User;
+import uit.trungdq.springboot.dto.OrderDTO;
+import uit.trungdq.springboot.dto.OrderDetailDTO;
 
 @Service
 public class JsonKafkaProducer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonKafkaProducer.class);
+    private final KafkaTemplate<String, OrderDTO> kafkaTemplateOrder;
+    private final KafkaTemplate<String, OrderDetailDTO> kafkaTemplateOrderDetail;
 
-    private KafkaTemplate<String, User> kafkaTemplate;
-
-    public JsonKafkaProducer(KafkaTemplate<String, User> kafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;
+    public JsonKafkaProducer(KafkaTemplate<String, OrderDTO> kafkaTemplateOrder,
+                             KafkaTemplate<String, OrderDetailDTO> kafkaTemplateOrderDetail) {
+        this.kafkaTemplateOrder = kafkaTemplateOrder;
+        this.kafkaTemplateOrderDetail = kafkaTemplateOrderDetail;
     }
 
-    public void sendMessage(User data) {
-        LOGGER.info("Message sent -> {}", data.toString());
+    public void sendMessage(OrderDTO order) {
+        LOGGER.info("Message sent -> {}", order.toString());
 
-        Message<User> message = MessageBuilder
-                .withPayload(data)
-                .setHeader(KafkaHeaders.TOPIC, "test_json")
+        Message<OrderDTO> message = MessageBuilder
+                .withPayload(order)
+                .setHeader(KafkaHeaders.TOPIC, "orders")
                 .build();
 
-        kafkaTemplate.send(message);
+        kafkaTemplateOrder.send(message);
+    }
+
+    public void sendMessage(OrderDetailDTO orderDetail) {
+        LOGGER.info("Message sent -> {}", orderDetail.toString());
+
+        Message<OrderDetailDTO> message = MessageBuilder
+                .withPayload(orderDetail)
+                .setHeader(KafkaHeaders.TOPIC, "order-detail")
+                .build();
+
+        kafkaTemplateOrderDetail.send(message);
     }
 }
