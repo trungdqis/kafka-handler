@@ -135,11 +135,15 @@
         crossorigin="anonymous"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        $("#radioCOD").on("click", function() {
+        $("#radioCOD").off("click", function() {
+            $("#submitCOD").addClass("d-none");
+        }).on("click", function() {
             $("#submitCOD").removeClass("d-none");
         });
 
-        $("#radioPaypal").on("click", function() {
+        $("#radioPaypal").off("click", function() {
+            $("#submitPAYPAL").addClass("d-none");
+        }).on("click", function() {
             $("#submitPAYPAL").removeClass("d-none");
         });
 

@@ -1,7 +1,9 @@
 package uit.trungdq.springboot.dto;
 
+import java.util.UUID;
+
 public class OrderDTO {
-    private Long id;
+    private UUID id;
     private Long customerId;
     private String orderTime;
     private int shippingCost;
@@ -12,11 +14,11 @@ public class OrderDTO {
     private String paymentMethod;
     private String shippingAddress;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

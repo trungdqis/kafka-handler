@@ -6,9 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 public class Order {
-    private Long id;
+    private UUID id;
     private Customer customer;
     private Date orderTime;
     private int shippingCost;
@@ -20,11 +21,11 @@ public class Order {
     private String shippingAddress;
     private Set<OrderDetail> orderDetails = new HashSet<>();
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

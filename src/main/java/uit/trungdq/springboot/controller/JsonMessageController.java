@@ -17,6 +17,7 @@ import uit.trungdq.springboot.payload.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -41,6 +42,10 @@ public class JsonMessageController {
         CheckoutInfo checkoutInfo = checkoutService.prepareCheckout(cartItemsByCustomer);
 
         Order newOrder = new Order();
+
+        UUID uuid = UUID.randomUUID();
+
+        newOrder.setId(uuid);
         newOrder.setOrderTime(new Date());
         newOrder.setCustomer(DataUtility.getListCustomers().stream()
                 .filter(item -> customerId.equals(item.getId()))
@@ -55,7 +60,7 @@ public class JsonMessageController {
         newOrder.setShippingAddress(cartItemsByCustomer.get(0).getCustomerInfoShipping());
 
         System.out.println(OrderConverter.toDTO(newOrder));
-       kafkaProducer.sendMessage(OrderConverter.toDTO(newOrder));
+        kafkaProducer.sendMessage(OrderConverter.toDTO(newOrder));
 
         // OrderDetail
         Set<OrderDetail> orderDetails = newOrder.getOrderDetails();
@@ -71,13 +76,13 @@ public class JsonMessageController {
             orderDetail.setSubtotal(cartItem.getSubtotal());
             orderDetail.setShippingCost(newOrder.getShippingCost());
 
-//            kafkaProducer.sendMessage(OrderDetailConverter.toDTO(orderDetail));
+            kafkaProducer.sendMessage(OrderDetailConverter.toDTO(orderDetail));
 
             System.out.println(OrderDetailConverter.toDTO(orderDetail));
 
             orderDetails.add(orderDetail);
         }
-
+    
         return ResponseEntity.ok("Json message sent to kafka topic" + " with " + orderRequest);
     }
 }

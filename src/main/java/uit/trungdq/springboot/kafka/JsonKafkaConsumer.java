@@ -17,7 +17,7 @@ public class JsonKafkaConsumer {
         LOGGER.info("Json message received -> {}", order.toString());
     }
 
-//    @KafkaListener(topics = "orderDetail", groupId = "anotherGroup")
+   @KafkaListener(topics = "order-detail", groupId = "anotherGroup")
     public void consume(OrderDetailDTO orderDetail) {
         LOGGER.info("Json message received -> {}", orderDetail);
     }
